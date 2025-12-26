@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LoginDotnet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+322194bea62154c31a1f335c7d6b7897c712c431")]
 [assembly: System.Reflection.AssemblyProductAttribute("LoginDotnet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LoginDotnet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -211,3 +211,5 @@ C:\Users\User\Documents\Jason-codespace\LoginDotnet\LoginDotnet\obj\Debug\net10.
 C:\Users\User\Documents\Jason-codespace\LoginDotnet\LoginDotnet\obj\Debug\net10.0\LoginDotnet.pdb
 C:\Users\User\Documents\Jason-codespace\LoginDotnet\LoginDotnet\obj\Debug\net10.0\LoginDotnet.genruntimeconfig.cache
 C:\Users\User\Documents\Jason-codespace\LoginDotnet\LoginDotnet\obj\Debug\net10.0\ref\LoginDotnet.dll
+C:\Users\User\Documents\Jason-codespace\LoginDotnet\LoginDotnet\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\User\Documents\Jason-codespace\LoginDotnet\LoginDotnet\obj\Debug\net10.0\LoginDotnet.sourcelink.json

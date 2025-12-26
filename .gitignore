@@ -4,7 +4,6 @@
 **/*.user
 **/*.suo
 **/*.userosscache
-**/*.slnx
 **/*.futdcache
 **/*.vsidx
 **/*.vsp

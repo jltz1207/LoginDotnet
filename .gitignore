@@ -1,8 +1,28 @@
-# Visual Studio files
-.vs/
-*.slnx
-*.user
-*.suo
-*.futdcache
-*.vsidx
-*.bin
+## Visual Studio - IGNORE EVERYWHERE IN PROJECT
+**/.vs/
+**/.vsx/
+**/*.user
+**/*.suo
+**/*.userosscache
+**/*.slnx
+**/*.futdcache
+**/*.vsidx
+**/*.vsp
+**/*.vspx
+**/*.sap
+
+## Build outputs - EVERYWHERE
+**/bin/
+**/obj/
+**/[Bb]uild/
+**/[Bb]uildLog/
+**/*.bin
+**/*.obj
+**/*.exe
+**/*.dll
+**/*.pdb
+
+## Project files that might appear in subfolders
+**/*.csproj.user
+**/*.vbproj.user
+**/*.fsproj.user

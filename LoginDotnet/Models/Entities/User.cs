@@ -6,6 +6,7 @@ namespace LoginDotnet.Models.Entities
     {
         public string FirstName {  get; set; }
         public string LastName { get; set; }
+        public string FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string? ProfilePictureUrl { get; set; }
     }

@@ -50,7 +50,12 @@ namespace LoginDotnet.Extensions
                     };
                 });
 
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdmin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("RequireUser", policy => policy.RequireRole("User", "Admin"));
+            });
+
             services.AddScoped<IAccountService, AccountService>();
         }
 

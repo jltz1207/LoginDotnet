@@ -1,9 +1,11 @@
-﻿using LoginDotnet.Infra.Security;
+﻿using LoginDotnet.Data;
+using LoginDotnet.Infra.Security;
 using LoginDotnet.Models.Dtos;
 using LoginDotnet.Models.Entities;
 using LoginDotnet.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LoginDotnet.Services.Implementations
 {
@@ -11,10 +13,12 @@ namespace LoginDotnet.Services.Implementations
     {
         private UserManager<User> _userManager;
         private IConfiguration _config;
-        public AccountService(UserManager<User> userManager, IConfiguration config)
+        private ApplicationContext _context;
+        public AccountService(UserManager<User> userManager, IConfiguration config, ApplicationContext context)
         {
             _userManager = userManager;
             _config = config;
+            _context = context;
         }
 
         public async Task<List<User>> GetUsers()
@@ -23,13 +27,28 @@ namespace LoginDotnet.Services.Implementations
             return users;
         }
 
-        public async Task<Object> Register(RegisterDto userDto)
+        public async Task<object> Register(RegisterDto userDto, string ipAddress)
         {
-            var user = await _userManager.FindByEmailAsync(userDto.Email);
-            if (user != null)
+            // create log early but postpone Save until outcome is known
+            var userLog = new UserActivityLog
             {
+                Email = userDto.Email,
+                ActivityType = ActivityType.Register,
+                Timestamp = CommonService.GenerateHKTime(),
+                IpAddress = ipAddress 
+            };
+
+
+            var existing = await _userManager.FindByEmailAsync(userDto.Email);
+            if (existing != null)
+            {
+                userLog.result = false;
+                userLog.Message = "User with this email already exists";
+                _context.UserActivityLogs.Add(userLog);
+                await _context.SaveChangesAsync();
                 throw new Exception("User with this email already exists");
             }
+
             var newUser = new User
             {
                 FullName = $"{userDto.FirstName} {userDto.LastName}",
@@ -40,37 +59,73 @@ namespace LoginDotnet.Services.Implementations
                 DateOfBirth = userDto.DateOfBirth,
                 PhoneNumber = userDto.PhoneNumber
             };
-            var result = await _userManager.CreateAsync(newUser, userDto.Password);
 
-            if (!result.Succeeded)
+            var createResult = await _userManager.CreateAsync(newUser, userDto.Password);
+            if (!createResult.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new Exception($"User creation failed: {errors}");
+                userLog.result = false;
+                userLog.Message = "User creation failed: " + string.Join("; ", createResult.Errors.Select(e => e.Description));
+                _context.UserActivityLogs.Add(userLog);
+                await _context.SaveChangesAsync();
+
+                throw new Exception($"User creation failed: {userLog.Message}");
+
             }
+
+            // generate token
             var token = await TokenService.CreateToken(newUser, _userManager, _config);
+
+            userLog.result = true;
+            userLog.Message = "User registered successfully";
+            _context.UserActivityLogs.Add(userLog);
+
+            // single save and commit transaction
+            await _context.SaveChangesAsync();
+
             return new
             {
                 Token = token,
                 User = newUser
-            }
-            ;
+            };
         }
-
-        public async Task<Object> Login(LoginDto loginDto)
+        public async Task<object> Login(LoginDto loginDto, string ipAddress)
         {
+            // create log early
+            var userLog = new UserActivityLog
+            {
+                Email = loginDto.Email,
+                ActivityType = ActivityType.Login,
+                Timestamp = CommonService.GenerateHKTime(),
+                IpAddress = ipAddress
+            };
+
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user == null)
             {
+                userLog.result = false;
+                userLog.Message = "Invalid credentials";
+                _context.UserActivityLogs.Add(userLog);
+                await _context.SaveChangesAsync();
                 throw new Exception("Invalid credentials");
             }
 
             var passwordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
             if (!passwordValid)
             {
+                userLog.result = false;
+                userLog.Message = "Invalid credentials";
+                _context.UserActivityLogs.Add(userLog);
+                await _context.SaveChangesAsync();
                 throw new Exception("Invalid credentials");
             }
 
             var token = await TokenService.CreateToken(user, _userManager, _config);
+
+            userLog.result = true;
+            userLog.Message = "User logged in successfully";
+            _context.UserActivityLogs.Add(userLog);
+            await _context.SaveChangesAsync();
+
             return new
             {
                 Token = token,

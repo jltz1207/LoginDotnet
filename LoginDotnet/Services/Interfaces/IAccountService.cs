@@ -6,8 +6,8 @@ namespace LoginDotnet.Services.Interfaces
     public interface IAccountService
     {
         Task<List<User>> GetUsers();
-        Task<Object> Register(RegisterDto userDto);
-        Task<Object> Login(LoginDto loginDto); // added login signature
+        Task<Object> Register(RegisterDto userDto, string ipAddress);
+        Task<Object> Login(LoginDto loginDto, string ipAddress); // added ipAddress parameter
 
     }
 }

@@ -21,6 +21,7 @@
 **/*.dll
 **/*.pdb
 
+**/logs/
 ## Project files that might appear in subfolders
 **/*.csproj.user
 **/*.vbproj.user

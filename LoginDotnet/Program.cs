@@ -1,6 +1,7 @@
 using LoginDotnet.Data;
 using LoginDotnet.Extensions;
 using LoginDotnet.Models.Entities;
+using LoginDotnet.Seed;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 var builder = WebApplication.CreateBuilder(args);
@@ -19,9 +20,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+await RoleSeeder.SeedRoles(app.Services);
 app.Run();

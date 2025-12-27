@@ -5,6 +5,7 @@ namespace LoginDotnet.Data
 {
     public class ApplicationContext : IdentityDbContext<User>
     {
+        public DbSet<UserActivityLog> UserActivityLogs { get; set; }
         public ApplicationContext(DbContextOptions options) : base(options)
         {
         }
@@ -17,6 +18,12 @@ namespace LoginDotnet.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<UserActivityLog>(
+                entity =>
+                {
+                    entity.HasKey(e => new { e.Email,e.ActivityType, e.Timestamp });
+                }
+            );
         }
     }
 }

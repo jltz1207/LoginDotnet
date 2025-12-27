@@ -20,7 +20,7 @@ namespace LoginDotnet.Controllers
             _accountService = accountService;
             _logger = logger;
         }
-
+        [Authorize(Roles = "User")]
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -51,7 +51,7 @@ namespace LoginDotnet.Controllers
             
             try
             {
-                var obj = await _accountService.Register(userdto);
+                var obj = await _accountService.Register(userdto, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown");
                 return Ok(obj);
 
             }
@@ -78,7 +78,7 @@ namespace LoginDotnet.Controllers
 
             try
             {
-                var obj = await _accountService.Login(loginDto);
+                var obj = await _accountService.Login(loginDto, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown");
                 return Ok(obj);
             }
             catch (Exception ex)

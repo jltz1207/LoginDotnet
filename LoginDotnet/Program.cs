@@ -20,6 +20,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// Add CORS middleware BEFORE UseRouting/UseAuthorization
+app.UseCors("AllowAll"); // Use allow-all policy
 app.UseAuthentication();
 app.UseAuthorization();
 

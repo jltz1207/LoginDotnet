@@ -1,4 +1,4 @@
-﻿namespace LoginDotnet.Services.Implementations
+﻿namespace LoginDotnet.Services.CommonServices
 {
     public static class CommonService
     {

@@ -26,3 +26,6 @@
 **/*.csproj.user
 **/*.vbproj.user
 **/*.fsproj.user
+
+## Source files
+**/Uploads/

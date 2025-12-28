@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata;
 
 namespace LoginDotnet.Controllers
 {
@@ -51,7 +52,7 @@ namespace LoginDotnet.Controllers
             
             try
             {
-                var obj = await _accountService.Register(userdto, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown");
+                var obj = await _accountService.Register(userdto);
                 return Ok(obj);
 
             }
@@ -78,7 +79,7 @@ namespace LoginDotnet.Controllers
 
             try
             {
-                var obj = await _accountService.Login(loginDto, HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown");
+                var obj = await _accountService.Login(loginDto);
                 return Ok(obj);
             }
             catch (Exception ex)
@@ -92,6 +93,43 @@ namespace LoginDotnet.Controllers
             }
         }
 
+        [HttpPost("uploadProfile")]
+        public async Task<IActionResult> UploadProfilePic([FromForm] UploadProfileDto ProfileForm)
+        {
+            try
+            {
+                string profileLink = await _accountService.UploadProfilePic(ProfileForm.userProfile);
+                return Ok(new { ProfileLink = profileLink });
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred during profile picture upload");
+                return BadRequest(new ErrorViewModel
+                {
+                    Code = "INTERNAL_ERROR",
+                    Message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("profileImage")]
+        public async Task<IActionResult> GetProfileImage()
+        {
+            try
+            {
+                string profileLink = await _accountService.GetProfileImage();
+                return Ok(new { ProfileLink = profileLink });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching profile image");
+                return BadRequest(new ErrorViewModel
+                {
+                    Code = "INTERNAL_ERROR",
+                    Message = ex.Message
+                });
+            }
+        }
 
     }
 }

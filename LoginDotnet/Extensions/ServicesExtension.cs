@@ -1,5 +1,6 @@
 ﻿using LoginDotnet.Data;
 using LoginDotnet.Models.Entities;
+using LoginDotnet.Services.CommonServices;
 using LoginDotnet.Services.Implementations;
 using LoginDotnet.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -76,6 +77,7 @@ namespace LoginDotnet.Extensions
             });
 
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<FileStorageService>();
         }
 
     }

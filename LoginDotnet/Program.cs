@@ -3,6 +3,7 @@ using LoginDotnet.Extensions;
 using LoginDotnet.Models.Entities;
 using LoginDotnet.Seed;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Uploads")),
+    RequestPath = "/Uploads",
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=3600");
+    }
+        
+});
 // Add CORS middleware BEFORE UseRouting/UseAuthorization
 app.UseCors("AllowAll"); // Use allow-all policy
 app.UseAuthentication();
